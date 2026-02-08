@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты подбора - RealEstate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">🏠 RealEstate AI</a>
+            <div class="nav-links">
+                <a href="/">Главная</a>
+                <a href="/catalog">Каталог</a>
+                <a href="/ai-search">ИИ-подбор</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Результаты -->
+    <section class="results-section">
+        <div class="container">
+            <div class="results-header">
+                <h1>🎯 Результаты ИИ-подбора</h1>
+                <a href="/ai-search" class="btn btn-secondary">← Новый поиск</a>
+            </div>
+
+            <!-- Контейнер для результатов (заполняется JS) -->
+            <div id="resultsContainer"></div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 RealEstate AI. Учебный проект.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Получаем результаты из localStorage
+        const results = JSON.parse(localStorage.getItem('aiResults') || '[]');
+        const container = document.getElementById('resultsContainer');
+
+        if (results.length === 0) {
+            container.innerHTML = `
+                <div class="no-results">
+                    <p>😔 К сожалению, не найдено вариантов по вашим критериям</p>
+                    <a href="/ai-search" class="btn btn-primary">Попробовать другие параметры</a>
+                </div>
+            `;
+        } else {
+            let html = '<div class="results-grid">';
+            
+            results.forEach((item, index) => {
+                const prop = item.property;
+                const score = item.score;
+                const matchLevel = item.match_level;
+                const explanations = item.explanations;
+                
+                // Определяем цвет бейджа по уровню совпадения
+                let badgeClass = 'badge-low';
+                if (score >= 80) badgeClass = 'badge-high';
+                else if (score >= 60) badgeClass = 'badge-medium';
+                
+                html += `
+                    <div class="result-card">
+                        <div class="result-rank">#${index + 1}</div>
+                        <img src="${prop.image_url}" alt="${prop.title}" class="result-image">
+                        <div class="result-info">
+                            <div class="result-header">
+                                <h3>${prop.title}</h3>
+                                <div class="result-badge ${badgeClass}">
+                                    ${matchLevel} (${score.toFixed(1)} баллов)
+                                </div>
+                            </div>
+                            
+                            <div class="property-location">📍 ${prop.city}, ${prop.address}</div>
+                            
+                            <div class="property-details">
+                                <span>🏠 ${prop.rooms} комн.</span>
+                                <span>📐 ${prop.area} м²</span>
+                                ${prop.type === 'apartment' ? `<span>🏢 ${prop.floor}/${prop.total_floors} этаж</span>` : ''}
+                            </div>
+                            
+                            <p class="property-description">${prop.description}</p>
+                            
+                            <div class="ai-explanation">
+                                <h4>💡 Почему этот вариант подходит:</h4>
+                                <ul>
+                                    ${explanations.map(exp => `<li>${exp}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="result-footer">
+                                <div class="property-price">${prop.price.toLocaleString('ru-RU')} ₽</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

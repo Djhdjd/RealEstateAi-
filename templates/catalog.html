@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог недвижимости - RealEstate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">🏠 RealEstate AI</a>
+            <div class="nav-links">
+                <a href="/">Главная</a>
+                <a href="/catalog">Каталог</a>
+                <a href="/ai-search">ИИ-подбор</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Каталог -->
+    <section class="catalog-section">
+        <div class="container">
+            <h1>Каталог недвижимости</h1>
+            
+            <!-- Фильтры -->
+            <div class="filters">
+                <form method="GET" action="/catalog" class="filter-form">
+                    <div class="filter-group">
+                        <label>Город:</label>
+                        <select name="city">
+                            <option value="">Все города</option>
+                            {% for city in cities %}
+                            <option value="{{ city.city }}">{{ city.city }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Цена от:</label>
+                        <input type="number" name="min_price" placeholder="0">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Цена до:</label>
+                        <input type="number" name="max_price" placeholder="∞">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Комнат:</label>
+                        <select name="rooms">
+                            <option value="">Любое</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Тип:</label>
+                        <select name="type">
+                            <option value="">Любой</option>
+                            <option value="apartment">Квартира</option>
+                            <option value="house">Дом</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Применить</button>
+                </form>
+            </div>
+
+            <!-- Список объектов -->
+            <div class="properties-grid">
+                {% for property in properties %}
+                <div class="property-card">
+                    <img src="{{ property.image_url }}" alt="{{ property.title }}" class="property-image">
+                    <div class="property-info">
+                        <h3>{{ property.title }}</h3>
+                        <div class="property-location">📍 {{ property.city }}, {{ property.address }}</div>
+                        <div class="property-details">
+                            <span>🏠 {{ property.rooms }} комн.</span>
+                            <span>📐 {{ property.area }} м²</span>
+                            {% if property.type == 'apartment' %}
+                            <span>🏢 {{ property.floor }}/{{ property.total_floors }} этаж</span>
+                            {% endif %}
+                        </div>
+                        <p class="property-description">{{ property.description }}</p>
+                        <div class="property-price">{{ "{:,}".format(property.price).replace(',', ' ') }} ₽</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if not properties %}
+            <div class="no-results">
+                <p>😔 По вашим фильтрам ничего не найдено</p>
+                <a href="/catalog" class="btn btn-secondary">Сбросить фильтры</a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 RealEstate AI. Учебный проект.</p>
+        </div>
+    </footer>
+</body>
+</html>

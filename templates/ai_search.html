@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИИ-подбор недвижимости - RealEstate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">🏠 RealEstate AI</a>
+            <div class="nav-links">
+                <a href="/">Главная</a>
+                <a href="/catalog">Каталог</a>
+                <a href="/ai-search">ИИ-подбор</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Форма ИИ-подбора -->
+    <section class="ai-search-section">
+        <div class="container">
+            <div class="ai-search-header">
+                <h1>🤖 ИИ-подбор недвижимости</h1>
+                <p>Укажите ваши предпочтения, и искусственный интеллект подберёт идеальные варианты</p>
+            </div>
+
+            <div class="ai-search-form-wrapper">
+                <form id="aiSearchForm" class="ai-search-form">
+                    <div class="form-group">
+                        <label for="budget">💰 Ваш бюджет (₽):</label>
+                        <input type="number" id="budget" name="budget" required 
+                               placeholder="Например: 10000000" min="0" step="100000">
+                        <small>Укажите максимальную сумму, которую готовы потратить</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">🌆 Город:</label>
+                        <select id="city" name="city" required>
+                            <option value="">Выберите город</option>
+                            {% for city in cities %}
+                            <option value="{{ city.city }}">{{ city.city }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rooms">🏠 Количество комнат:</label>
+                        <select id="rooms" name="rooms" required>
+                            <option value="">Выберите количество</option>
+                            <option value="1">1 комната (студия)</option>
+                            <option value="2">2 комнаты</option>
+                            <option value="3">3 комнаты</option>
+                            <option value="4">4 комнаты</option>
+                            <option value="5">5+ комнат</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="purpose">🎯 Цель:</label>
+                        <select id="purpose" name="purpose" required>
+                            <option value="buy">Покупка</option>
+                            <option value="rent">Аренда</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large">
+                        🔍 Найти с помощью ИИ
+                    </button>
+                </form>
+
+                <!-- Лоадер -->
+                <div id="loader" class="loader" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>ИИ анализирует варианты...</p>
+                </div>
+            </div>
+
+            <!-- Информация о работе ИИ -->
+            <div class="ai-info">
+                <h3>Как работает ИИ-подбор?</h3>
+                <div class="ai-info-grid">
+                    <div class="ai-info-item">
+                        <strong>🎯 Анализ предпочтений</strong>
+                        <p>ИИ учитывает ваш бюджет, желаемое количество комнат и город</p>
+                    </div>
+                    <div class="ai-info-item">
+                        <strong>📊 Scoring-система</strong>
+                        <p>Каждый объект получает баллы за соответствие критериям</p>
+                    </div>
+                    <div class="ai-info-item">
+                        <strong>💡 Умные объяснения</strong>
+                        <p>ИИ объясняет, почему именно эти варианты вам подходят</p>
+                    </div>
+                    <div class="ai-info-item">
+                        <strong>⚡ Ранжирование</strong>
+                        <p>Лучшие варианты показываются первыми</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 RealEstate AI. Учебный проект.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
